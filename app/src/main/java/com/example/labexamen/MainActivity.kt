@@ -11,17 +11,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.example.labexamen.presentation.cryptolist.AssetListDestination
+import com.example.labexamen.presentation.cryptolist.assetListScreen
+import com.example.labexamen.presentation.cryptoprofile.assetProfileScreen
+import com.example.labexamen.presentation.cryptoprofile.navigateToAssetProfileScreen
 import com.example.labexamen.ui.theme.LabExamenTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             LabExamenTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    MainNavigation(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +38,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+private fun MainNavigation(
+    navHostController: NavHostController = rememberNavController(),
+    modifier: Modifier
+) {
+    NavHost(
+        navController = rememberNavController(),
+        startDestination = AssetListDestination,
+        modifier = Modifier
+    ) {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LabExamenTheme {
-        Greeting("Android")
+        assetListScreen(
+            onAssetClick =  { id ->
+                navHostController.navigateToAssetProfileScreen(assetID = id)
+            }
+        )
+        assetProfileScreen()
     }
 }
